@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+
+    <default>
+        <reference name="head">
+            <action method="addCss"><name>aitvbulletin.css</name></action>
+        </reference>
+    </default> 
+    <aitvbulletinsetup_admin_vbserver_edit>
+        <reference name="content">
+            <block type="aitvbulletin/admin_vbserver_edit" name="vbserver_edit">
+                <block type="aitvbulletin/admin_vbserver_edit_form" name="vbserver_edit_form" />
+                <block type="aitvbulletin/admin_news" name="aitoc_news" />
+            </block>
+        </reference>
+        <reference name="js">
+            <block type="adminhtml/template" template="aitvbulletin/vbserver/js.phtml" name="admin_vbserver_js"></block>
+        </reference>
+    </aitvbulletinsetup_admin_vbserver_edit>
+    
+</layout>

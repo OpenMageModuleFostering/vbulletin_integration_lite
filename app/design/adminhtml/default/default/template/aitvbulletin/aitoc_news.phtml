@@ -1,0 +1,26 @@
+<?php
+/**
+* @copyright  Copyright (c) 2009 AITOC, Inc. 
+*/
+?>
+
+<?php if ($this->getNews()) { ?>
+
+<div class="entry-edit">
+    <div class="entry-edit-head"><h4><?php echo $this->__("AITOC News")?></h4></div>
+    <div class="fieldset">
+        <div class="news">
+        <?php foreach ($this->getNews() as $item) { ?>
+        
+            <div class="item">
+            <?php if (isset($item['title']) && $item['title']) { ?><h2><?php echo $item['title']?></h2><?php } ?>
+            
+            <?php echo $item['content']?>
+            
+            </div>
+        <?php } ?>
+        
+        </div>
+    </div>
+</div>
+<?php } ?>

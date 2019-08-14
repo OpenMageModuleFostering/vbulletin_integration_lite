@@ -1,0 +1,72 @@
+<?php
+/**
+* @copyright  Copyright (c) 2009 AITOC, Inc. 
+*/
+?>
+<div class="page-head">
+    <h3><?php echo $this->helper('aitvbulletin')->__('Forum Integration') ?></h3>
+</div>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+
+<?php if ($this->getCustomer()->getAitvbulletinUserId()) { ?>
+
+<fieldset class="group-select">
+    <h4 class="legend"><?php echo $this->__('Forum Account: %s', $this->getCustomer()->getAitvbulletinUser()->getUsername()) ?></h4>
+    <div>
+        <?php if ($this->getCustomerAvatarPath()) { ?><img src="<?php echo $this->getCustomerAvatarPath(); ?>" alt="<?php echo $this->__('Your avatar'); ?>"/><?php } ?>
+        
+    </div>
+    <ul>
+        <li><?php echo $this->__('Joined');?>: <?php echo $this->formatDate(Mage::app()->getLocale()->date($this->getCustomer()->getAitvbulletinUser()->getJoindate()), 'short', true); ?></li>
+        <li><?php echo $this->__('Total Posts');?>: <?php echo $this->getCustomerPostsCount(); ?></li>
+        
+
+        <li><a href="<?php echo $this->getForumProfileUrl(); ?>" target="_blank"><?php echo $this->__('Visit your forum profile page'); ?></a></li>
+    </ul>
+</fieldset>
+<div class="button-set">
+    <a href="<?php echo $this->getBackUrl() ?>" class="left">&laquo; <?php echo $this->__('Back') ?></a>
+</div>
+
+<?php } else { ?>
+
+        <form action="<?php echo $this->getActionUrl() ?>" method="post" id="form-verify">
+        <?php echo $this->getBlockHtml('formkey')?>
+        
+        <fieldset class="group-select">
+            <h4 class="legend"><?php echo $this->__('Already Registered') ?></h4>
+            <ul>
+                <li>
+                    <div class="input-box">
+                        <label for="verify_username"><?php echo $this->__('Username') ?> <span class="required">*</span></label><br/>
+                        <input type="text" class="input-text required-entry" name="verify_username" id="verify_username" value="<?php echo $this->htmlEscape($this->getCustomer()->getVerifyUsername()); ?>" title="<?php echo $this->__('Username') ?>" />
+                    </div>
+                </li>
+                <li>
+                    <div class="input-box">
+                        <label for="verify_password"><?php echo $this->__('Password') ?> <span class="required">*</span></label><br/>
+                        <input type="password" class="input-text required-entry" name="verify_password" id="verify_password" title="<?php echo $this->__('Password') ?>" />
+                    </div>
+                </li>
+            </ul>
+            <div class="button-set">
+                <a href="<?php echo $this->getForumForgotUrl() ?>" class="left" target="_blank"><?php echo $this->__('Forgot Your Forum Password?') ?></a>
+                <button type="submit" class="form-button"><span><?php echo $this->__('Confirm') ?></span></button>
+            </div>
+        </fieldset>
+        </form>
+        
+
+<script type="text/javascript">
+//<![CDATA[
+var verifyForm = new VarienForm('form-verify');
+//]]>
+</script>
+
+<div class="button-set">
+    <a href="<?php echo $this->getBackUrl() ?>" class="left">&laquo; <?php echo $this->__('Back') ?></a>
+    <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+</div>
+
+<?php } ?>
+

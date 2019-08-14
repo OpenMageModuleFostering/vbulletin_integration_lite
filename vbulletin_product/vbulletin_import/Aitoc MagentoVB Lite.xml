@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<product productid="aitmagentovb" active="1">
+    <title>AITOC MagentoVB Lite Bridge</title>
+    <description>A bridge with your Magento website (lite version)</description>
+    <version>0.3.11</version>
+    <url><![CDATA[http://www.aitoc.com/]]></url>
+    <versioncheckurl />
+    <dependencies></dependencies>
+    <codes>
+        <code version="*">
+            <installcode><![CDATA[
+$sql = '
+CREATE TABLE IF NOT EXISTS `'.TABLE_PREFIX.'aitmagentovb_hash` (
+  `hashid` int(10) unsigned NOT NULL auto_increment,
+  `hash` varchar(36) NOT NULL,
+  `validthru` datetime NOT NULL,
+  `created_by` ENUM(  "vbul",  "mage" ) NOT NULL,
+  PRIMARY KEY (`hashid`),
+  KEY `validthru` (`validthru`),
+  KEY `hash` (`hash`)
+) ENGINE=MyISAM
+';
+$vbulletin->db->query_write($sql);
+            ]]></installcode>
+            <uninstallcode><![CDATA[ 
+$vbulletin->db->query_first('DROP TABLE IF EXISTS `'.TABLE_PREFIX.'aitmagentovb_hash`');
+            ]]></uninstallcode>
+        </code>
+    </codes>
+    
+    <templates>
+        <template name="aitmagentovb_auth_image" templatetype="template" date="1250000000" username="Aitoc" version="1.0.0"><![CDATA[
+
+<div style="position: absolute !important; top: -10px !important; left: -10px !important; width: 1px !important; height: 1px !important; ">
+    <img src="#aitmagentovbUrl" width="1" height="1" alt="" border="0" />
+</div>
+
+        ]]></template>
+    </templates>
+    
+    <plugins>
+        <plugin active="1" executionorder="5">
+            <title>Template Cache</title>
+            <hookname>cache_templates</hookname>
+            <phpcode><![CDATA[
+
+$globaltemplates = array_merge($globaltemplates, array('aitmagentovb_bbcode_quote','aitmagentovb_auth_image',));
+
+            ]]></phpcode>
+        </plugin>
+        <plugin active="1" executionorder="5">
+            <title>Parse Templates</title>
+            <hookname>parse_templates</hookname>
+            <phpcode><![CDATA[
+
+if ($vbulletin->userinfo['userid'] AND 2 == $vbulletin->userinfo['usergroupid'] AND $show['member'])
+{
+    $aitmagentovbVars = array(
+        'do' => 'login',
+        'u'  => $vbulletin->userinfo['userid'],
+    );
+    $aitmagentovbUrl = Aitmagentovb::getProxyUrl($aitmagentovbVars, null, $aitmagentovbVars['do'].$aitmagentovbVars['u']);
+    
+    $vbulletin->templatecache['navbar'] .= str_replace('#aitmagentovbUrl', $aitmagentovbUrl, $vbulletin->templatecache['aitmagentovb_auth_image']);
+}
+
+            ]]></phpcode>
+        </plugin>
+        <plugin active="1" executionorder="5">
+            <title>INIT Startup</title>
+            <hookname>init_startup</hookname>
+            <phpcode><![CDATA[
+
+require_once(DIR . '/includes/class_aitmagentovb.php');
+Aitmagentovb::cleanHashes();
+
+            ]]></phpcode>
+        </plugin>
+        
+        <plugin active="1" executionorder="5">
+            <title>Login Process</title>
+            <hookname>login_process</hookname>
+            <phpcode><![CDATA[
+
+$aitmagentovbVars = array(
+    'do' => 'login',
+    'u'  => $vbulletin->userinfo['userid'],
+);
+$aitmagentovbUrl = Aitmagentovb::getProxyUrl($aitmagentovbVars, null, $aitmagentovbVars['do'].$aitmagentovbVars['u']);
+
+$vbulletin->templatecache['navbar'] .= str_replace('#aitmagentovbUrl', $aitmagentovbUrl, $vbulletin->templatecache['aitmagentovb_auth_image']);
+
+            ]]></phpcode>
+        </plugin>
+        
+        <plugin active="1" executionorder="5">
+            <title>Logout Process</title>
+            <hookname>logout_process</hookname>
+            <phpcode><![CDATA[
+
+$aitmagentovbVars = array(
+    'do' => 'logout',
+);
+$aitmagentovbUrl = Aitmagentovb::getProxyUrl($aitmagentovbVars, null, $aitmagentovbVars['do']);
+
+$vbulletin->templatecache['navbar'] .= str_replace('#aitmagentovbUrl', $aitmagentovbUrl, $vbulletin->templatecache['aitmagentovb_auth_image']);
+
+            ]]></phpcode>
+        </plugin>
+        
+        <plugin active="1" executionorder="5">
+            <title>User delete by Admin</title>
+            <hookname>userdata_delete</hookname>
+            <phpcode><![CDATA[
+
+require_once(DIR . '/includes/class_aitmagentovb.php');
+require_once(DIR . '/includes/class_aitzend.php');
+$aVars = array(
+    'do' => 'unlink',
+    'u'  => $this->existing['userid'],
+);
+try
+{
+    $aResponce = Aitmagentovb::curlWrite(
+                    'POST', 
+                     Aitmagentovb::getProxyUrl($aVars, null, $aVars['do'].$aVars['u']), 
+                     '1.1', 
+                     array(), 
+                     Aitmagentovb::mergeRequestVars($aVars, true)
+                 );
+} catch (Exception $e) { }
+
+            ]]></phpcode>
+        </plugin>
+    </plugins>
+
+    <phrases>
+        <phrasetype name="vBulletin Settings" fieldname="vbsettings">
+            <phrase name="setting_aitmagentovb_apikey_title" date="0" username="Aitoc" version=""><![CDATA[Module API key]]></phrase>
+            <phrase name="setting_aitmagentovb_apikey_desc" date="0" username="Aitoc" version=""><![CDATA[use it to create a connection in Magento Admin "System > vBulletin Connection"]]></phrase>
+            
+            <phrase name="setting_aitmagentovb_url_title" date="0" username="Aitoc" version=""><![CDATA[Your Magento URL]]></phrase>
+            <phrase name="setting_aitmagentovb_url_desc" date="0" username="Aitoc" version=""><![CDATA[starting with http://]]></phrase>
+            
+            <phrase name="settinggroup_aitmagentovb" date="0" username="Aitoc" version=""><![CDATA[AITOC MagentoVB Lite Settings]]></phrase>
+        </phrasetype>
+    </phrases>
+    
+    <options>
+        <settinggroup name="aitmagentovb" displayorder="65535">
+            <setting varname="aitmagentovb_apikey" displayorder="10">
+                   <datatype>free</datatype>
+                   <defaultvalue><![CDATA[changeme]]></defaultvalue>
+            </setting>
+            <setting varname="aitmagentovb_url" displayorder="30">
+                   <datatype>free</datatype>
+                   <defaultvalue><![CDATA[]]></defaultvalue>
+            </setting>
+        </settinggroup>
+    </options>
+    
+    <helptopics>
+    </helptopics>
+    
+    <cronentries>
+    </cronentries>
+    
+    <faqentries>
+    </faqentries>
+    
+</product>

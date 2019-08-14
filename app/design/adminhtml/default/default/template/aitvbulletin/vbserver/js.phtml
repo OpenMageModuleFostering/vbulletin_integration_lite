@@ -1,0 +1,38 @@
+<?php
+/**
+* @copyright  Copyright (c) 2009 AITOC, Inc. 
+*/
+?>
+<script type="text/javascript">
+//<![CDATA[
+
+var AitvbulletinValidation = Object.extend(Validation);
+
+AitvbulletinValidation.ajaxError = function(elm, errorMsg) {
+    var name = 'validate-ajax';
+    var advice = Validation.getAdvice(name, elm);
+    if (advice == null) {
+        advice = this.createAdvice(name, elm, false, errorMsg);
+    }
+/* added lines */
+    else
+    {
+        advice.update(errorMsg);
+    }
+/* end of added lines */
+    this.showAdvice(elm, advice, 'validate-ajax');
+    this.updateCallback(elm, 'failed');
+
+    elm.addClassName('validation-failed');
+    elm.addClassName('validate-ajax');
+    if (this.defaultOptions.addClassNameToContainer && this.defaultOptions.containerClassName != '') {
+        var container = elm.up(this.defaultOptions.containerClassName);
+        if (container && this.allowContainerClassName(elm)) {
+            container.removeClassName('validation-passed');
+            container.addClassName('validation-error');
+        }
+    }
+};
+
+//]]>
+</script>

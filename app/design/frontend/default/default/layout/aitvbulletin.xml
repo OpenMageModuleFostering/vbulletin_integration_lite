@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- @copyright  Copyright (c) 2009 AITOC, Inc. -->
+
+<layout>
+    <default>
+        <reference name="head">
+            <action method="addCss"><stylesheet>css/aitvbulletin.css</stylesheet></action>
+        </reference>
+        <reference name="footer_links">
+            <action method="addLink" ifconfig="aitvbulletin/forum/enabled">
+                <label helper="aitvbulletin/getForumLabel"/>
+                <url helper="aitvbulletin/getForumUrl"/>
+                <title helper="aitvbulletin/getForumTitle"/>
+                <prepare/>
+                <urlParams/>
+                <position>999</position>
+            </action>
+        </reference>
+    </default>
+    
+    <customer_account>
+        <reference name="customer_account_navigation"> 
+            <action method="addLink" translate="label" module="aitvbulletin" ifconfig="aitvbulletin/forum/enabled">
+                <name>aitvbulletin_forum_integration_link</name>
+                <url>aitvbulletin/account/forum</url>
+                <label>Forum Integration</label>
+            </action>
+        </reference> 
+    </customer_account> 
+
+    <customer_account_logoutsuccess>
+        <reference name="content">
+            <block type="aitvbulletin/account_logout"/>
+        </reference>
+    </customer_account_logoutsuccess>
+    
+    <aitvbulletin_account_forum>
+        <update handle="customer_account"/> 
+        <reference name="content">
+            <block type="aitvbulletin/account_forum" name="aitvbulletin_forum_integration_form" template="aitvbulletin/customer/forum.phtml"/> 
+        </reference>
+    </aitvbulletin_account_forum>
+    
+</layout>

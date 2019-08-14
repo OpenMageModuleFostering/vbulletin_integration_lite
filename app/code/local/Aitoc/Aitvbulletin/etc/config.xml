@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- @copyright  Copyright (c) 2009 AITOC, Inc. -->
+<config>
+    <modules>
+        <Aitoc_Aitvbulletin>
+            <version>0.3.11</version>
+        </Aitoc_Aitvbulletin>
+    </modules>
+
+    <global>
+        <models>
+        
+            <aitvbulletin>
+                <class>Aitoc_Aitvbulletin_Model</class>
+            </aitvbulletin>
+            
+            <aitvbulletin_vbulletin>
+                <class>Aitoc_Aitvbulletin_Model_Vbulletin</class>
+                <resourceModel>aitvbulletin_vbulletin_resource</resourceModel>
+            </aitvbulletin_vbulletin>
+            <aitvbulletin_vbulletin_resource>
+                <class>Aitoc_Aitvbulletin_Model_Vbulletin_Mysql4</class>
+                <entities>
+                    <user>
+                        <table>user</table>
+                    </user>
+                    <aitmagentovb_hash>
+                        <table>aitmagentovb_hash</table>
+                    </aitmagentovb_hash>
+                </entities>
+            </aitvbulletin_vbulletin_resource>
+            
+            <customer>
+                <rewrite>
+                    <customer>Aitoc_Aitvbulletin_Model_Rewrite_FrontCustomer</customer>
+                </rewrite>
+            </customer>
+            
+        </models>
+        <blocks>
+            <aitvbulletin>
+                <class>Aitoc_Aitvbulletin_Block</class>
+            </aitvbulletin>
+            <page>
+                <rewrite>
+                    <html>Aitoc_Aitvbulletin_Block_Rewrite_FrontPageHtml</html>
+                </rewrite>
+            </page>
+        </blocks>
+        <helpers>
+            <aitvbulletin>
+                <class>Aitoc_Aitvbulletin_Helper</class>
+            </aitvbulletin>
+        </helpers>
+        <resources>
+            <aitvbulletin_setup>
+                <setup>
+                    <module>Aitoc_Aitvbulletin</module>
+                    <class>Aitoc_Aitvbulletin_Model_Mysql4_Setup</class>
+                </setup>
+                <connection><use>core_setup</use></connection>
+            </aitvbulletin_setup>
+            <aitvbulletin_write>
+                <connection><use>core_write</use></connection>
+            </aitvbulletin_write>
+            <aitvbulletin_read>
+                <connection><use>core_read</use></connection>
+            </aitvbulletin_read>
+        </resources>
+    </global>
+    
+    <frontend>
+        <translate>
+            <modules>
+                <Aitoc_Aitvbulletin>
+                    <files>
+                        <default>Aitoc_Aitvbulletin.csv</default>
+                    </files>
+                </Aitoc_Aitvbulletin>
+            </modules>
+        </translate>
+        
+        <events>
+            <customer_logout>
+                <observers>
+                    <aitoc_aitvbulletin>
+                        <type>singleton</type>
+                        <class>aitvbulletin/observer</class>
+                        <method>customerLogout</method>
+                    </aitoc_aitvbulletin>
+                </observers>
+            </customer_logout>
+        </events>
+        
+        <layout>
+            <updates>
+                <aitvbulletin>
+                    <file>aitvbulletin.xml</file>
+                </aitvbulletin>
+            </updates>
+        </layout>
+        
+        <routers>
+            <aitvbulletin>
+                <use>standard</use>
+                <args>
+                    <module>Aitoc_Aitvbulletin</module>
+                    <frontName>aitvbulletin</frontName>
+                </args>
+            </aitvbulletin>
+        </routers>
+    </frontend>
+    
+    <admin>
+        <routers>
+            <aitvbulletinsetup>
+                <use>admin</use>
+                <args>
+                    <module>Aitoc_Aitvbulletin</module>
+                    <frontName>aitvbulletinsetup</frontName>
+                </args>
+            </aitvbulletinsetup>
+        </routers>
+    </admin>
+    
+    <default>
+        <aitvbulletin>
+            <forum>
+                <enabled>0</enabled>
+                <linktitle>Forum</linktitle>
+            </forum>
+            <vbserver>
+                <type>mysql</type>
+                <name/>
+                <prefix/>
+                <user/>
+                <pass/>
+                <host/>
+                <port/>
+                <link/>
+                <apikey/>
+            </vbserver>
+        </aitvbulletin>
+    </default>
+
+    <adminhtml>
+        <layout>
+            <updates>
+                <aitvbulletin>
+                    <file>aitvbulletin.xml</file>
+                </aitvbulletin>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <Aitoc_Aitvbulletin>
+                    <files>
+                        <default>Aitoc_Aitvbulletin.csv</default>
+                    </files>
+                </Aitoc_Aitvbulletin>
+            </modules>
+        </translate>
+        <menu>
+            <system>
+                <children>
+                    <aitvbulletinsetup translate="title" module="aitvbulletin">
+                        <title>vBulletin Connection</title>
+                        <sort_order>4</sort_order>               
+                        <action>aitvbulletinsetup/admin_vbserver</action>
+                    </aitvbulletinsetup>
+                </children>
+            </system>
+        </menu>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <aitvbulletinsetup translate="title" module="aitvbulletin">
+                                    <title>Manage vBulletin Connection</title>
+                                    <sort_order>1</sort_order>
+                                </aitvbulletinsetup>
+                                <config>
+                                    <children>
+                                        <aitvbulletin translate="title" module="aitvbulletin">
+                                            <title>vBulletin Integration Settings</title>
+                                        </aitvbulletin>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+        <events>
+            <controller_action_predispatch>
+                <observers>
+                    <aitoc_aitvbulletin>
+                        <type>singleton</type>
+                        <class>aitvbulletin/notification_observer</class>
+                        <method>performPreDispatch</method>
+                    </aitoc_aitvbulletin>
+                </observers>
+            </controller_action_predispatch>
+        </events>
+        
+    </adminhtml>
+    
+</config>

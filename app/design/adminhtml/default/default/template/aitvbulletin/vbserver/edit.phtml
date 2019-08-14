@@ -1,0 +1,54 @@
+<?php
+/**
+* @copyright  Copyright (c) 2009 AITOC, Inc. 
+*/
+?>
+
+<div class="content-header">
+    <h3 class="icon-head head-products"><?php echo $this->__('Manage vBulletin Server Connection') ?></h3>
+    <p class="content-buttons form-buttons"><?php 
+    echo $this->getCancelButtonHtml();
+    echo $this->getSaveButtonHtml();
+?></p>
+</div>
+
+<div><?php echo $this->__('For proper functioning of the extension you need to download %s product package.<br/><br/>', $this->getVbDownloadLinkHtml()); ?></div>
+<table width="100%">
+    <tr>
+        <td>
+            <form action="<?php echo $this->getSaveUrl() ?>" method="post" id="vbserver_edit_form" enctype="multipart/form-data">
+                <?php echo $this->getBlockHtml('formkey')?>
+                <?php echo $this->getChildHtml('vbserver_edit_form')?>
+            </form>
+        </td>
+        <td id="aitoc_news">
+<?php echo $this->getChildHtml('aitoc_news'); ?>
+
+        </td>
+    </tr>
+</table>
+
+
+<script type="text/javascript">
+//<![CDATA[
+
+var vbserverForm = new varienForm('vbserver_edit_form', '<?php echo $this->getValidationUrl() ?>');
+vbserverForm._processValidationResult = function(transport) {
+    var response = transport.responseText.evalJSON();
+    if (response.error){
+        if (response.field && $(response.field)) {
+            $(response.field).setHasError(true, vbserverForm);
+            AitvbulletinValidation.ajaxError($(response.field), response.message);
+            $(response.field).focus();
+        }
+        else if ($('messages')) {
+            $('messages').innerHTML = '<ul class="messages"><li class="error-msg"><ul><li>' + response.message + '</li></ul></li></ul>';
+        }
+    }
+    else{
+        vbserverForm._submit();
+    }
+};
+
+//]]>
+</script>

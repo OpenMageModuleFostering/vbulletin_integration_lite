@@ -1,5 +1,5 @@
 {
-    "name": "OpenMageModuleFostering\/vBulletin_Integration_Lite",
+    "name": "openmage-module-fostering\/vbulletin_integration_lite",
     "type": "magento-module",
     "license": "OSL-v3.0",
     "homepage": "",

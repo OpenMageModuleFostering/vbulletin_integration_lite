@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/vBulletin_Integration_Lite",
+    "name": "OpenMageModuleFostering\/vBulletin_Integration_Lite",
     "type": "magento-module",
     "license": "OSL-v3.0",
     "homepage": "",
     "description": "vBulletin Integration Lite",
     "authors": [
-    {
-        "name": "AITOC Inc.",
-        "email": "magsupport@aitoc.com"
-    }
-],
+        {
+            "name": "AITOC Inc.",
+            "email": "magsupport@aitoc.com"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
